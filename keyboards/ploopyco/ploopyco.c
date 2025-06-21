@@ -29,7 +29,7 @@
 #endif
 
 #ifndef PLOOPY_SCROLL_DEBOUNCE
-#    define PLOOPY_SCROLL_DEBOUNCE 5
+#    define PLOOPY_SCROLL_DEBOUNCE 1
 #endif
 #ifndef PLOOPY_SCROLL_BUTTON_DEBOUNCE
 #    define PLOOPY_SCROLL_BUTTON_DEBOUNCE 100
@@ -39,17 +39,17 @@
 #    define PLOOPY_DPI_OPTIONS \
         { 600, 900, 1200, 1600, 2400 }
 #    ifndef PLOOPY_DPI_DEFAULT
-#        define PLOOPY_DPI_DEFAULT 1
+#        define PLOOPY_DPI_DEFAULT 3
 #    endif
 #endif
 #ifndef PLOOPY_DPI_DEFAULT
-#    define PLOOPY_DPI_DEFAULT 0
+#    define PLOOPY_DPI_DEFAULT 3
 #endif
 #ifndef PLOOPY_DRAGSCROLL_DIVISOR_H
-#    define PLOOPY_DRAGSCROLL_DIVISOR_H 8.0
+#    define PLOOPY_DRAGSCROLL_DIVISOR_H 60.0
 #endif
 #ifndef PLOOPY_DRAGSCROLL_DIVISOR_V
-#    define PLOOPY_DRAGSCROLL_DIVISOR_V 8.0
+#    define PLOOPY_DRAGSCROLL_DIVISOR_V 60.0
 #endif
 #ifndef ENCODER_BUTTON_ROW
 #    define ENCODER_BUTTON_ROW 0
@@ -144,7 +144,7 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         scroll_accumulated_v += (float)mouse_report.y / PLOOPY_DRAGSCROLL_DIVISOR_V;
 
         // Assign integer parts of accumulated scroll values to the mouse report
-        mouse_report.h = (int8_t)scroll_accumulated_h;
+        mouse_report.h = -(int8_t)scroll_accumulated_h;
 #ifdef PLOOPY_DRAGSCROLL_INVERT
         mouse_report.v = -(int8_t)scroll_accumulated_v;
 #else
@@ -188,13 +188,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     }
 
     if (keycode == DRAG_SCROLL) {
-#ifdef PLOOPY_DRAGSCROLL_MOMENTARY
+// Hold Scroll
         is_drag_scroll = record->event.pressed;
-#else
-        if (record->event.pressed) {
-            toggle_drag_scroll();
-        }
-#endif
+
     }
 
     return true;
